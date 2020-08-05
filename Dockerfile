@@ -8,10 +8,10 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["GymondoBE.API/GymondoBE.API.csproj", "GymondoBE.API/"]
+RUN ls
 RUN dotnet restore "GymondoBE.API/Gymondo.BE.API.csproj"
 COPY . .
 WORKDIR "/src/GymondoBE.API"
-RUN ls
 RUN dotnet build "GymondoBE.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
