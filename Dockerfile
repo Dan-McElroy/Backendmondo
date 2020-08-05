@@ -7,16 +7,17 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["GymondoAPI/GymondoAPI.csproj", "GymondoAPI/"]
-RUN dotnet restore "GymondoAPI/GymondoAPI.csproj"
+COPY ["GymondoAPI/GymondoBE.API.csproj", "GymondoBE.API/"]
+RUN dotnet restore "GymondoBE.API/Gymondo.BE.API.csproj"
 COPY . .
-WORKDIR "/src/GymondoAPI"
-RUN dotnet build "GymondoAPI.csproj" -c Release -o /app/build
+WORKDIR "/src/GymondoBE.API"
+RUN dotnet build "GymondoBE.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "GymondoAPI.csproj" -c Release -o /app/publish
+RUN dotnet publish "GymondoBE.API.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "GymondoAPI.dll"]
+# ENTRYPOINT ["dotnet", "GymondoAPI.dll"]
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet GymondoBE.API.dll

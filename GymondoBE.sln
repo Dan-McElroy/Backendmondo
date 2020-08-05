@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymondoBE.API", "GymondoBE.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4A5A419E-C087-451B-8448-0D31857044C0}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
 		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
