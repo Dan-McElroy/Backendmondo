@@ -6,7 +6,6 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Backendmondo.API/Backendmondo.API.csproj", "Backendmondo.API/"]
-RUN ls
 RUN dotnet restore "Backendmondo.API/Backendmondo.API.csproj"
 COPY . .
 WORKDIR "/src/Backendmondo.API"
