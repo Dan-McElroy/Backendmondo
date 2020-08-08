@@ -1,5 +1,3 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
@@ -7,16 +5,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["GymondoAPI/GymondoAPI.csproj", "GymondoAPI/"]
-RUN dotnet restore "GymondoAPI/GymondoAPI.csproj"
+COPY ["Backendmondo.API/Backendmondo.API.csproj", "Backendmondo.API/"]
+RUN dotnet restore "Backendmondo.API/Backendmondo.API.csproj"
 COPY . .
-WORKDIR "/src/GymondoAPI"
-RUN dotnet build "GymondoAPI.csproj" -c Release -o /app/build
+WORKDIR "/src/Backendmondo.API"
+RUN dotnet build "Backendmondo.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "GymondoAPI.csproj" -c Release -o /app/publish
+RUN dotnet publish "Backendmondo.API.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "GymondoAPI.dll"]
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet Backendmondo.API.dll
