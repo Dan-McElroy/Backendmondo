@@ -1,5 +1,6 @@
 ﻿using Backendmondo.API.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Backendmondo.API.Context
 {
@@ -9,5 +10,7 @@ namespace Backendmondo.API.Context
         DbSet<SubscriptionPause> SubscriptionPauses { get; }
         DbSet<Subscription> Subscriptions { get; }
         DbSet<User> Users { get; }
+
+        Task Save();
     }
 }

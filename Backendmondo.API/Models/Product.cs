@@ -10,5 +10,13 @@ namespace Backendmondo.API.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
+
+        public string Name { get; set; }
+
+        public int DurationMonths { get; set; }
+
+        public float PriceUSD { get; set; }
+
+        public float TaxUSD { get; set; }
     }
 }

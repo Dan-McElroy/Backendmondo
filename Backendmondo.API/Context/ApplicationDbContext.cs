@@ -21,5 +21,7 @@ namespace Backendmondo.API.Context
         : base(options)
         {
         }
+
+        public async Task Save() => await base.SaveChangesAsync();
     }
 }
