@@ -17,4 +17,7 @@ RUN dotnet publish "Backendmondo.API.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet Backendmondo.API.dll
+#CMD ASPNETCORE_URLS=http://*:$PORT dotnet Backendmondo.API.dll
+
+RUN chmod +x ./entrypoint.sh
+CMD ASPNETCORE_URLS=http://*:$PORT ./entrypoint.sh
