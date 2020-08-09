@@ -19,5 +19,6 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 #CMD ASPNETCORE_URLS=http://*:$PORT dotnet Backendmondo.API.dll
 
+COPY ["entrypoint.sh", "entrypoint.sh"]
 RUN chmod +x ./entrypoint.sh
 CMD ASPNETCORE_URLS=http://*:$PORT ./entrypoint.sh
