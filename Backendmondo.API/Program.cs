@@ -1,13 +1,14 @@
+using Backendmondo.API.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace GymondoAPI
+namespace Backendmondo.API
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().MigrateDatabase<ApplicationDbContext>().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

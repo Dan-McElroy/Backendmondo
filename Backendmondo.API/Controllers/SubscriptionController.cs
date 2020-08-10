@@ -10,7 +10,7 @@ namespace Backendmondo.API.Controllers
     {
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetProduct(string id)
+        public IActionResult GetSubscription(string id)
         {
             if (!Guid.TryParse(id, out var guid))
             {

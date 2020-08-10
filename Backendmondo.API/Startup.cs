@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 
-namespace GymondoAPI
+namespace Backendmondo.API
 {
     public class Startup
     {
