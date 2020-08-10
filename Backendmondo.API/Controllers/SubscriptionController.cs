@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Linq;
+using Backendmondo.API.Context;
+using Backendmondo.API.Helpers;
+using Backendmondo.API.Models;
 using Backendmondo.API.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,26 +12,28 @@ namespace Backendmondo.API.Controllers
     [Route("[controller]")]
     public class SubscriptionController : ControllerBase
     {
-        [HttpGet]
-        [Route("{id}")]
-        public IActionResult GetSubscription(string id)
+        private readonly IApplicationDbContext _context;
+
+        public SubscriptionController(IApplicationDbContext context)
         {
-            if (!Guid.TryParse(id, out var guid))
+            _context = context;
+        }
+
+        [HttpGet]
+        [Route("")]
+        public IActionResult GetSubscription([FromQuery] string email)
+        {
+            // TODO: Validate email address
+
+            var subscription = _context.Subscriptions.FirstOrDefault(
+                subscription => subscription.User.MatchesEmailAddress(email));
+
+            if (subscription == null)
             {
-                return BadRequest("Given ID is an invalid format.");
+                return NotFound("No subscription found for the given email address.");
             }
 
-            var rng = new Random();
-            var example = new SubscriptionDTO
-            {
-                Id = id,
-                Duration = rng.Next(1, 12),
-                StartDate = DateTime.UtcNow - TimeSpan.FromDays(30),
-                EndDate = DateTime.UtcNow + TimeSpan.FromDays(30),
-                Price = 4,
-                Tax = 12
-            };
-            return new ObjectResult(example);
+            return new ObjectResult(subscription.ToDTO());
         }
 
         [HttpPost]
@@ -38,6 +44,27 @@ namespace Backendmondo.API.Controllers
             {
                 return BadRequest("Given ID has an invalid format.");
             }
+
+            var subscription = _context.Subscriptions.Find(guid);
+
+            var currentPause = subscription.Pauses
+                .FirstOrDefault(pause => pause.Started <= DateTime.UtcNow && pause.Ended == null);
+
+            if (currentPause != null)
+            {
+                return BadRequest("Subscription is already paused.");
+            }
+
+            var pause = new SubscriptionPause()
+            {
+                Subscription = subscription,
+                Started = DateTime.UtcNow
+            };
+
+            _context.SubscriptionPauses.Add(pause);
+            
+            _context.Save();
+
             return NoContent();
         }
 
@@ -49,6 +76,21 @@ namespace Backendmondo.API.Controllers
             {
                 return BadRequest("Given ID has an invalid format.");
             }
+
+            var subscription = _context.Subscriptions.Find(guid);
+
+            var currentPause = subscription.Pauses
+                .FirstOrDefault(pause => pause.Started <= DateTime.UtcNow && pause.Ended == null);
+
+            if (currentPause == null)
+            {
+                return BadRequest("Subscription is already active.");
+            }
+
+            currentPause.Ended = DateTime.UtcNow;
+
+            _context.Save();
+
             return NoContent();
         }
 

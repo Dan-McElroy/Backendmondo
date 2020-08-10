@@ -11,5 +11,10 @@ namespace Backendmondo.API.Models
 
         [EmailAddress]
         public string Email { get; set; }
+
+        public bool MatchesEmailAddress(string email)
+        {
+            return string.Compare(Email.Trim(), email.Trim(), true) == 0;
+        }
     }
 }

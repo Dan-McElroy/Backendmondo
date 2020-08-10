@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Backendmondo.API.Models.DTOs
 {
@@ -11,7 +8,7 @@ namespace Backendmondo.API.Models.DTOs
 
         public DateTime StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public float Price { get; set; }
 

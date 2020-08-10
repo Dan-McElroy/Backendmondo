@@ -16,5 +16,10 @@ namespace Backendmondo.API.Models
         public DateTime Started { get; set; }
 
         public DateTime? Ended { get; set; }
+
+        public bool IsOngoing => Ended == null;
+
+        public TimeSpan Duration 
+            => (Ended ?? Started - TimeSpan.FromSeconds(1)) - Started;
     }
 }
