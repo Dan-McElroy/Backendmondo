@@ -25,8 +25,10 @@ namespace Backendmondo.API.Controllers
         {
             // TODO: Validate email address
 
-            var subscription = _context.Subscriptions.FirstOrDefault(
-                subscription => subscription.User.MatchesEmailAddress(email));
+            var subscription = _context.Subscriptions
+                .AsEnumerable()
+                .FirstOrDefault(
+                    subscription => subscription.User.MatchesEmailAddress(email));
 
             if (subscription == null)
             {
