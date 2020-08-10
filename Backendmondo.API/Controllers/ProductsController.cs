@@ -26,37 +26,25 @@ namespace Backendmondo.API.Controllers
         [Route("")]
         public IActionResult GetProducts()
         {
-            var rng = new Random();
-            var products = Enumerable.Range(1, 5).Select(index => new ProductDTO
-            {
-                Id = Guid.NewGuid().ToString(),
-                Duration = rng.Next(1, 12),
-                Name = index.ToString(),
-                Price = 4,
-                Tax = 12
-            });
             return new ObjectResult(_context.Products);
         }
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetProduct(string id)
+        public async Task<IActionResult> GetProduct(string id)
         {
             if (!Guid.TryParse(id, out var guid))
             {
                 return BadRequest();
             }
 
-            var rng = new Random();
-            var example = new ProductDTO
+            var product = await _context.Products.FindAsync(id);
+
+            if (product == null)
             {
-                Id = id,
-                Duration = rng.Next(1, 12),
-                Name = "Test product",
-                Price = 4,
-                Tax = 12
-            };
-            return new ObjectResult(example);
+                return NotFound();
+            }
+            return new ObjectResult(product);
         }
 
         [HttpPost]
