@@ -35,14 +35,14 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest();
+                return BadRequest("Given ID has an invalid format.");
             }
 
             var product = await _context.Products.FindAsync(id);
 
             if (product == null)
             {
-                return NotFound();
+                return NotFound("No product could be found with that ID.");
             }
             return new ObjectResult(product);
         }
@@ -51,10 +51,13 @@ namespace Backendmondo.API.Controllers
         [Route("purchase")]
         public IActionResult PostPurchase([FromBody] PurchaseRequestDTO request)
         {
-            if (!(Guid.TryParse(request.ProductId, out var productId)
-                || Guid.TryParse(request.UserId, out var userId)))
+            if (!(Guid.TryParse(request.ProductId, out var productId)))
             {
-                return BadRequest();
+                return BadRequest("Given product ID has an invalid format.");
+            }
+            if (!(Guid.TryParse(request.UserId, out var userId)))
+            {
+                return BadRequest("Given user ID has an invalid format.");
             }
             return NoContent();
         }

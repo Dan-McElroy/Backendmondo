@@ -14,7 +14,7 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest();
+                return BadRequest("Given ID is an invalid format.");
             }
 
             var rng = new Random();
@@ -36,7 +36,7 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest();
+                return BadRequest("Given ID is an invalid format.");
             }
             return NoContent();
         }
@@ -47,7 +47,7 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest();
+                return BadRequest("Given ID is an invalid format.");
             }
             return NoContent();
         }
@@ -58,7 +58,7 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest();
+                return BadRequest("Given ID is an invalid format.");
             }
             return Ok();
         }
