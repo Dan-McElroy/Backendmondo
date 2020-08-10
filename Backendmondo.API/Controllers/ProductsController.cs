@@ -13,12 +13,10 @@ namespace Backendmondo.API.Controllers
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly ILogger<ProductsController> _logger;
         private readonly IApplicationDbContext _context;
 
-        public ProductsController(ILogger<ProductsController> logger, IApplicationDbContext context)
+        public ProductsController(IApplicationDbContext context)
         {
-            _logger = logger;
             _context = context;
         }
 
@@ -69,7 +67,7 @@ namespace Backendmondo.API.Controllers
             _context.Products.Add(new Product { DurationMonths = product.Duration, Name = product.Name, PriceUSD = product.Price, TaxUSD = product.Tax });
             await _context.Save();
 
-            return Ok();
+            return Ok("Product successfully added to store.");
         }
     }
 }

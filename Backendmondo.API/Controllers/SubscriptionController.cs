@@ -36,7 +36,7 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest("Given ID is an invalid format.");
+                return BadRequest("Given ID has an invalid format.");
             }
             return NoContent();
         }
@@ -47,7 +47,7 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest("Given ID is an invalid format.");
+                return BadRequest("Given ID has an invalid format.");
             }
             return NoContent();
         }
@@ -58,9 +58,9 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest("Given ID is an invalid format.");
+                return BadRequest("Given ID has an invalid format.");
             }
-            return Ok();
+            return Ok("Subscription was successfully cancelled.");
         }
     }
 }
