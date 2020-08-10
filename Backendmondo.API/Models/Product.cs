@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Backendmondo.API.Models.DTOs;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Backendmondo.API.Models
 {
@@ -18,5 +16,17 @@ namespace Backendmondo.API.Models
         public float PriceUSD { get; set; }
 
         public float TaxUSD { get; set; }
+
+        public ProductDTO ToDTO()
+        {
+            return new ProductDTO
+            {
+                Id = Id.ToString(),
+                Name = Name,
+                Duration = DurationMonths,
+                Price = PriceUSD,
+                Tax = TaxUSD
+            };
+        }
     }
 }

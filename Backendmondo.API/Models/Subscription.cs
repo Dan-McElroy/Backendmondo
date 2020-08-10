@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Backendmondo.API.Models.DTOs;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Backendmondo.API.Models
 {
@@ -16,5 +18,36 @@ namespace Backendmondo.API.Models
         public DateTime Purchased { get; set; }
 
         public ICollection<SubscriptionPause> Pauses { get; set; }
+
+        public bool IsPaused => Pauses.Any(pause => pause.IsOngoing);
+
+        public DateTime? Expires
+        {
+            get
+            {
+                if (IsPaused)
+                {
+                    return null;
+                }
+                return Purchased.AddMonths(Product.DurationMonths) + TotalPauseDuration;
+            }
+        }
+
+        private TimeSpan TotalPauseDuration =>
+            TimeSpan.FromMilliseconds(Pauses
+                .Where(pause => !pause.IsOngoing)
+                .Sum(pause => pause.Duration.TotalMilliseconds));
+
+
+        public SubscriptionDTO ToDTO()
+        {
+            return new SubscriptionDTO
+            {
+                Id = Id.ToString(),
+                Duration = Product.DurationMonths,
+                StartDate = Purchased,
+                EndDate = Expires
+            };
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace Backendmondo.API.Controllers
         [Route("")]
         public IActionResult GetProducts()
         {
-            return new ObjectResult(_context.Products);
+            return new ObjectResult(_context.Products.Select(product => product.ToDTO()));
         }
 
         [HttpGet]
@@ -42,7 +42,7 @@ namespace Backendmondo.API.Controllers
             {
                 return NotFound("No product could be found with that ID.");
             }
-            return new ObjectResult(product);
+            return new ObjectResult(product.ToDTO());
         }
 
         [HttpPost]
@@ -52,10 +52,6 @@ namespace Backendmondo.API.Controllers
             if (!(Guid.TryParse(request.ProductId, out var productId)))
             {
                 return BadRequest("Given product ID has an invalid format.");
-            }
-            if (!(Guid.TryParse(request.UserId, out var userId)))
-            {
-                return BadRequest("Given user ID has an invalid format.");
             }
             return NoContent();
         }
