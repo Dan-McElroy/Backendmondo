@@ -15,6 +15,6 @@ namespace Backendmondo.API.Models
 
         public DateTime Started { get; set; }
 
-        public DateTime Ended { get; set; }
+        public DateTime? Ended { get; set; }
     }
 }
