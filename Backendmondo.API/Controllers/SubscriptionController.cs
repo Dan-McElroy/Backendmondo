@@ -41,6 +41,7 @@ namespace Backendmondo.API.Controllers
 
             var subscription = _context.Subscriptions
                 .Include(subscription => subscription.User)
+                .Include(subscription => subscription.Pauses)
                 .Include(subscription => subscription.ProductsPurchased)
                 .ThenInclude(purchase => purchase.Product)
                 .AsEnumerable()
@@ -59,7 +60,7 @@ namespace Backendmondo.API.Controllers
         [Route("{id}/pause")]
         public async Task<IActionResult> PostPause(string id)
         {
-            if (!Guid.TryParse(id, out var guid))
+            if (!Guid.TryParse(id, out var subscriptionId))
             {
                 ModelState.AddModelError(nameof(id), "Given ID has an invalid format.");
             }
@@ -69,14 +70,13 @@ namespace Backendmondo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var subscription = _context.Subscriptions.Find(guid);
+            var subscription = _context.Subscriptions
+                .Include(subscription => subscription.Pauses)
+                .FirstOrDefault(subscription => subscription.Id == subscriptionId);
 
-            var currentPause = subscription.Pauses
-                .FirstOrDefault(pause => pause.Started <= DateTime.UtcNow && pause.Ended == null);
-
-            if (currentPause != null)
+            if (subscription.Pauses.Any(pause => pause.IsOngoing))
             {
-                return BadRequest("Subscription with the given ID is already paused.");
+                return Conflict("Subscription with the given ID is already paused.");
             }
 
             var pause = new SubscriptionPause()
@@ -96,7 +96,7 @@ namespace Backendmondo.API.Controllers
         [Route("{id}/resume")]
         public async Task<IActionResult> PostResume(string id)
         {
-            if (!Guid.TryParse(id, out var guid))
+            if (!Guid.TryParse(id, out var subscriptionId))
             {
                 ModelState.AddModelError(nameof(id), "Given ID has an invalid format.");
             }
@@ -106,14 +106,14 @@ namespace Backendmondo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var subscription = _context.Subscriptions.Find(guid);
+            var subscription = _context.Subscriptions
+                .Include(subscription => subscription.Pauses)
+                .FirstOrDefault(subscription => subscription.Id == subscriptionId);
 
-            var currentPause = subscription.Pauses
-                .FirstOrDefault(pause => pause.Started <= DateTime.UtcNow && pause.Ended == null);
-
+            var currentPause = subscription.Pauses.FirstOrDefault(pause => pause.IsOngoing);
             if (currentPause == null)
             {
-                return BadRequest("Subscription is already active.");
+                return Conflict("Subscription with the given ID is already active.");
             }
 
             currentPause.Ended = DateTime.UtcNow;
