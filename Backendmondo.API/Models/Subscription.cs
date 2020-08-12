@@ -13,15 +13,25 @@ namespace Backendmondo.API.Models
 
         public User User { get; set; }
 
-        public ICollection<Product> Products { get; set; }
-
-        public DateTime Purchased { get; set; }
+        public ICollection<ProductPurchase> ProductsPurchased { get; set; }
 
         public ICollection<SubscriptionPause> Pauses { get; set; }
 
         private bool IsPaused => Pauses.Any(pause => pause.IsOngoing);
 
-        private int TotalDurationMonths => Products.Sum(product => product.DurationMonths);
+        private DateTime? Purchased
+        {
+            get
+            {
+                if (!ProductsPurchased.Any())
+                {
+                    return null;
+                }
+                return ProductsPurchased.Min(purchase => purchase.Purchased);
+            }
+        }
+
+        private int TotalDurationMonths => ProductsPurchased.Sum(purchase => purchase.Product.DurationMonths);
 
         private TimeSpan TotalPauseDuration =>
             TimeSpan.FromMilliseconds(Pauses
@@ -32,21 +42,26 @@ namespace Backendmondo.API.Models
         {
             get
             {
-                if (IsPaused)
+                if (IsPaused || !Purchased.HasValue)
                 {
                     return null;
                 }
-                var combinedProductDurationMonths = Products.Sum(product => product.DurationMonths);
-                return Purchased.AddMonths(combinedProductDurationMonths) + TotalPauseDuration;
+                var combinedProductDurationMonths = ProductsPurchased.Sum(purchase => purchase.Product.DurationMonths);
+                return Purchased.Value.AddMonths(combinedProductDurationMonths) + TotalPauseDuration;
             }
         }
 
         public Subscription()
         {
             Pauses = new List<SubscriptionPause>();
-            Products = new List<Product>();
+            ProductsPurchased = new List<ProductPurchase>();
         }
 
+        public Subscription(User user)
+        : this()
+        {
+            User = user;
+        }
 
         public SubscriptionDTO ToDTO()
         {
@@ -54,9 +69,9 @@ namespace Backendmondo.API.Models
             {
                 Id = Id.ToString(),
                 TotalDuration = TotalDurationMonths,
-                StartDate = Purchased.ToString("yyyy-MM-dd"),
+                StartDate = Purchased?.ToString("yyyy-MM-dd"),
                 EndDate = Expires?.ToString("yyyy-MM-dd"),
-                PurchasedProducts = Products.Select(product => product.ToDTO())
+                PurchasedProducts = ProductsPurchased.Select(purchased => purchased.ToDTO()).OrderBy(purchase => purchase.DateOfPurchase)
             };
         }
     }

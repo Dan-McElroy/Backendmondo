@@ -18,6 +18,8 @@ namespace Backendmondo.API.Context
 
         public DbSet<User> Users { get; private set; }
 
+        public DbSet<ProductPurchase> ProductPurchases { get; private set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
         {

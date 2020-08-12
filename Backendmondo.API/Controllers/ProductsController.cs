@@ -75,7 +75,17 @@ namespace Backendmondo.API.Controllers
 
             var subscription = FindOrCreateSubscription(user);
 
-            subscription.Products.Add(product);
+            var purchase = new ProductPurchase
+            {
+                Product = product,
+                Subscription = subscription,
+                PriceUSDWhenPurchased = product.PriceUSD,
+                TaxUSDWhenPurchased = product.TaxUSD,
+                Purchased = DateTime.UtcNow
+            };
+
+            _context.ProductPurchases.Add(purchase);
+
             await _context.Save();
 
             return NoContent();
@@ -107,16 +117,13 @@ namespace Backendmondo.API.Controllers
         {
             var subscription = _context.Subscriptions
                 .Include(subscription => subscription.User)
-                .Include(subscription => subscription.Products)
+                .Include(subscription => subscription.ProductsPurchased)
+                .ThenInclude(purchase => purchase.Product)
                 .FirstOrDefault(subscription => subscription.User == user);
 
             if (subscription == null)
             {
-                subscription = new Subscription
-                {
-                    User = user,
-                    Purchased = DateTime.UtcNow
-                };
+                subscription = new Subscription(user);
 
                 _context.Subscriptions.Add(subscription);
             }

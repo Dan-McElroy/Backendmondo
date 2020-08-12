@@ -41,7 +41,8 @@ namespace Backendmondo.API.Controllers
 
             var subscription = _context.Subscriptions
                 .Include(subscription => subscription.User)
-                .Include(subscription => subscription.Products)
+                .Include(subscription => subscription.ProductsPurchased)
+                .ThenInclude(purchase => purchase.Product)
                 .AsEnumerable()
                 .FirstOrDefault(
                     subscription => subscription.User.MatchesEmailAddress(email));

@@ -10,6 +10,7 @@ namespace Backendmondo.API.Context
         DbSet<SubscriptionPause> SubscriptionPauses { get; }
         DbSet<Subscription> Subscriptions { get; }
         DbSet<User> Users { get; }
+        DbSet<ProductPurchase> ProductPurchases { get; }
 
         Task Save();
     }

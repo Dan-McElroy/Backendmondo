@@ -12,7 +12,7 @@ namespace Backendmondo.API.Models.DTOs
 
         public string EndDate { get; set; }
 
-        public IEnumerable<ProductDTO> PurchasedProducts { get; set; }
+        public IEnumerable<ProductPurchaseDTO> PurchasedProducts { get; set; }
 
         public int TotalDuration { get; set; }
     }
