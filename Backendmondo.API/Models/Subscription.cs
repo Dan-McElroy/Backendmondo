@@ -17,7 +17,7 @@ namespace Backendmondo.API.Models
 
         public ICollection<SubscriptionPause> Pauses { get; set; }
 
-        private bool IsPaused => Pauses.Any(pause => pause.IsOngoing);
+        private SubscriptionPause ActivePause => Pauses.FirstOrDefault(pause => pause.IsOngoing);
 
         private DateTime? Purchased
         {
@@ -46,7 +46,7 @@ namespace Backendmondo.API.Models
         {
             get
             {
-                if (IsPaused || !Purchased.HasValue)
+                if (ActivePause != null || !Purchased.HasValue)
                 {
                     return null;
                 }
@@ -72,13 +72,13 @@ namespace Backendmondo.API.Models
             return new SubscriptionDTO
             {
                 Id = Id.ToString(),
-                TotalDuration = TotalDurationMonths,
+                TotalDurationMonths = TotalDurationMonths,
                 StartDate = Purchased?.ToString("yyyy-MM-dd"),
                 EndDate = Expires?.ToString("yyyy-MM-dd"),
                 PurchasedProducts = ProductsPurchased.Select(purchased => purchased.ToDTO()).OrderBy(purchase => purchase.DateOfPurchase),
                 TotalPurchaseCostUSD = TotalPurchaseCostUSD,
                 TotalTaxCostUSD = TotalTaxCostUSD,
-                IsPaused = IsPaused
+                DatePaused = ActivePause?.Started.ToString("yyyy-MM-dd")
             };
         }
     }
