@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Backendmondo.API.Context;
 using Backendmondo.API.Models;
 using Backendmondo.API.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Backendmondo.API.Controllers
 {
@@ -33,7 +33,12 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest("Given ID has an invalid format.");
+                ModelState.AddModelError(nameof(id), "Given ID has an invalid format.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             var product = await _context.Products.FindAsync(id);
@@ -51,8 +56,14 @@ namespace Backendmondo.API.Controllers
         {
             if (!(Guid.TryParse(request.ProductId, out var productId)))
             {
-                return BadRequest("Given product ID has an invalid format.");
+                ModelState.AddModelError(nameof(request.ProductId), "Given product ID has an invalid format.");
             }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             return NoContent();
         }
 

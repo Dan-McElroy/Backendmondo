@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Backendmondo.API.Context;
 using Backendmondo.API.Helpers;
 using Backendmondo.API.Models;
 using Backendmondo.API.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace Backendmondo.API.Controllers
 {
@@ -12,18 +14,30 @@ namespace Backendmondo.API.Controllers
     [Route("[controller]")]
     public class SubscriptionController : ControllerBase
     {
-        private readonly IApplicationDbContext _context;
+        private const string EmailRegexConfigKey = "EmailRegex";
 
-        public SubscriptionController(IApplicationDbContext context)
+        private readonly IApplicationDbContext _context;
+        private readonly string _emailRegex;
+
+        public SubscriptionController(IApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _emailRegex = configuration[EmailRegexConfigKey];
         }
 
         [HttpGet]
         [Route("")]
         public IActionResult GetSubscription([FromQuery] string email)
         {
-            // TODO: Validate email address
+            if (!IsValidEmailAddress(email))
+            {
+                ModelState.AddModelError(nameof(email), "The email field is not a valid email address.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var subscription = _context.Subscriptions
                 .AsEnumerable()
@@ -44,7 +58,12 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest("Given ID has an invalid format.");
+                ModelState.AddModelError(nameof(id), "Given ID has an invalid format.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             var subscription = _context.Subscriptions.Find(guid);
@@ -54,7 +73,7 @@ namespace Backendmondo.API.Controllers
 
             if (currentPause != null)
             {
-                return BadRequest("Subscription is already paused.");
+                return BadRequest("Subscription with the given ID is already paused.");
             }
 
             var pause = new SubscriptionPause()
@@ -76,7 +95,12 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest("Given ID has an invalid format.");
+                ModelState.AddModelError(nameof(id), "Given ID has an invalid format.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             var subscription = _context.Subscriptions.Find(guid);
@@ -102,9 +126,20 @@ namespace Backendmondo.API.Controllers
         {
             if (!Guid.TryParse(id, out var guid))
             {
-                return BadRequest("Given ID has an invalid format.");
+                ModelState.AddModelError(nameof(id), "Given ID has an invalid format.");
             }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             return Ok("Subscription was successfully cancelled.");
+        }
+
+        private bool IsValidEmailAddress(string email)
+        {
+            return Regex.IsMatch(email, _emailRegex);
         }
     }
 }
