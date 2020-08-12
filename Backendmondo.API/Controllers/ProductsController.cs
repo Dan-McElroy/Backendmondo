@@ -45,7 +45,7 @@ namespace Backendmondo.API.Controllers
 
             if (product == null)
             {
-                return NotFound("No product could be found with that ID.");
+                return NotFound("No product could be found with the given ID.");
             }
             return new ObjectResult(product.ToDTO());
         }
@@ -54,7 +54,7 @@ namespace Backendmondo.API.Controllers
         [Route("purchase")]
         public IActionResult PostPurchase([FromBody] PurchaseRequestDTO request)
         {
-            if (!(Guid.TryParse(request.ProductId, out var productId)))
+            if (!(Guid.TryParse(request.ProductId, out var _)))
             {
                 ModelState.AddModelError(nameof(request.ProductId), "Given product ID has an invalid format.");
             }
@@ -63,6 +63,32 @@ namespace Backendmondo.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            var product = _context.Products.Find(request.ProductId);
+
+            if (product == null)
+            {
+                return NotFound("No product could be found with the given ID.");
+            }
+
+            var user = _context.Users.AsEnumerable().FirstOrDefault(user => user.MatchesEmailAddress(request.UserEmail));
+
+            if (user == null)
+            {
+                user = new User { Email = request.UserEmail.Trim().ToLower() };
+                _context.Users.Add(user);
+            }
+
+            var subscription = new Subscription
+            {
+                Product = product,
+                User = user,
+                Purchased = DateTime.UtcNow
+            };
+
+            _context.Subscriptions.Add(subscription);
+
+            _context.Save();
 
             return NoContent();
         }
