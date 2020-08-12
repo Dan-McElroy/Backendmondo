@@ -1,6 +1,5 @@
 ﻿using Backendmondo.API.Models.DTOs;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,9 +17,20 @@ namespace Backendmondo.API.Models
         
         public DateTime Purchased { get; set; }
 
-        public float PriceUSDWhenPurchased { get; set; }
+        public float PriceUSDWhenPurchased { get; private set; }
 
-        public float TaxUSDWhenPurchased { get; set; }
+        public float TaxUSDWhenPurchased { get; private set; }
+
+        public ProductPurchase() { }
+
+        public ProductPurchase(Product product, Subscription subscription)
+        {
+            Product = product;
+            Subscription = subscription;
+            PriceUSDWhenPurchased = product.PriceUSD;
+            TaxUSDWhenPurchased = product.TaxUSD;
+            Purchased = DateTime.UtcNow;
+        }
 
         public ProductPurchaseDTO ToDTO()
         {

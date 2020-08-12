@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Backendmondo.API.Context
 {
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    internal class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         private const string IsDeletedKey = "IsDeleted";
 

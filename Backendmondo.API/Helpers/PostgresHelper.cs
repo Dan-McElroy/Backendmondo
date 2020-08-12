@@ -2,7 +2,7 @@
 
 namespace Backendmondo.API.Helpers
 {
-    public static class PostgresHelper
+    internal static class PostgresHelper
     {
         public static string ConvertUrlToConnectionString(string url)
         {

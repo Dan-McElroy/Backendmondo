@@ -75,14 +75,7 @@ namespace Backendmondo.API.Controllers
 
             var subscription = FindOrCreateSubscription(user);
 
-            var purchase = new ProductPurchase
-            {
-                Product = product,
-                Subscription = subscription,
-                PriceUSDWhenPurchased = product.PriceUSD,
-                TaxUSDWhenPurchased = product.TaxUSD,
-                Purchased = DateTime.UtcNow
-            };
+            var purchase = new ProductPurchase(product, subscription);
 
             _context.ProductPurchases.Add(purchase);
 

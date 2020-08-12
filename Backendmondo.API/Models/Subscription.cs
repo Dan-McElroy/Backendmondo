@@ -3,9 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Backendmondo.Tests")]
 namespace Backendmondo.API.Models
 {
+
     public class Subscription : ISoftDelete
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -17,9 +20,9 @@ namespace Backendmondo.API.Models
 
         public ICollection<SubscriptionPause> Pauses { get; set; }
 
-        private SubscriptionPause ActivePause => Pauses.FirstOrDefault(pause => pause.IsOngoing);
+        public SubscriptionPause ActivePause => Pauses.FirstOrDefault(pause => pause.IsOngoing);
 
-        private DateTime? Purchased
+        internal DateTime? Purchased
         {
             get
             {
@@ -31,18 +34,18 @@ namespace Backendmondo.API.Models
             }
         }
 
-        private int TotalDurationMonths => ProductsPurchased.Sum(purchase => purchase.Product.DurationMonths);
+        internal int TotalDurationMonths => ProductsPurchased.Sum(purchase => Math.Max(0, purchase.Product.DurationMonths));
 
-        private float TotalPurchaseCostUSD => ProductsPurchased.Sum(purchase => purchase.PriceUSDWhenPurchased);
+        internal float TotalPurchaseCostUSD => ProductsPurchased.Sum(purchase => purchase.PriceUSDWhenPurchased);
 
-        private float TotalTaxCostUSD => ProductsPurchased.Sum(purchase => purchase.TaxUSDWhenPurchased);
+        internal float TotalTaxCostUSD => ProductsPurchased.Sum(purchase => purchase.TaxUSDWhenPurchased);
 
-        private TimeSpan TotalPauseDuration =>
+        internal TimeSpan TotalPauseDuration =>
             TimeSpan.FromMilliseconds(Pauses
                 .Where(pause => !pause.IsOngoing)
-                .Sum(pause => pause.Duration.TotalMilliseconds));
+                .Sum(pause => Math.Max(0, pause.Duration.TotalMilliseconds)));
 
-        private DateTime? Expires
+        internal DateTime? Expires
         {
             get
             {
@@ -50,7 +53,7 @@ namespace Backendmondo.API.Models
                 {
                     return null;
                 }
-                var combinedProductDurationMonths = ProductsPurchased.Sum(purchase => purchase.Product.DurationMonths);
+                var combinedProductDurationMonths = ProductsPurchased.Sum(purchase => Math.Max(0, purchase.Product.DurationMonths));
                 return Purchased.Value.AddMonths(combinedProductDurationMonths) + TotalPauseDuration;
             }
         }
