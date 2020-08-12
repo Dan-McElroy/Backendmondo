@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Backendmondo.API.Models.DTOs
 {
@@ -10,10 +12,8 @@ namespace Backendmondo.API.Models.DTOs
 
         public string EndDate { get; set; }
 
-        public float Price { get; set; }
+        public IEnumerable<ProductDTO> PurchasedProducts { get; set; }
 
-        public float Tax { get; set; }
-
-        public int Duration { get; set; }
+        public int TotalDuration { get; set; }
     }
 }

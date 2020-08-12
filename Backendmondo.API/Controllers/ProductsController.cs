@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Backendmondo.API.Context;
 using Backendmondo.API.Models;
 using Backendmondo.API.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backendmondo.API.Controllers
 {
@@ -64,31 +64,18 @@ namespace Backendmondo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var product = _context.Products.Find(productId);
+            var product = await _context.Products.FindAsync(productId);
 
             if (product == null)
             {
                 return NotFound("No product could be found with the given ID.");
             }
 
-            var user = _context.Users.AsEnumerable().FirstOrDefault(user => user.MatchesEmailAddress(request.UserEmail));
+            var user = FindOrCreateUser(request.UserEmail);
 
-            if (user == null)
-            {
-                user = new User { Email = request.UserEmail.Trim().ToLower() };
-                _context.Users.Add(user);
-                await _context.Save();
-            }
+            var subscription = FindOrCreateSubscription(user);
 
-            var subscription = new Subscription
-            {
-                Product = product,
-                User = user,
-                Purchased = DateTime.UtcNow
-            };
-
-            _context.Subscriptions.Add(subscription);
-
+            subscription.Products.Add(product);
             await _context.Save();
 
             return NoContent();
@@ -102,6 +89,39 @@ namespace Backendmondo.API.Controllers
             await _context.Save();
 
             return Ok("Product successfully added to store.");
+        }
+
+        private User FindOrCreateUser(string email)
+        {
+            var user = _context.Users.AsEnumerable().FirstOrDefault(user => user.MatchesEmailAddress(email));
+
+            if (user == null)
+            {
+                user = new User { Email = email.Trim().ToLower() };
+                _context.Users.Add(user);
+            }
+            return user;
+        }
+
+        private Subscription FindOrCreateSubscription(User user)
+        {
+            var subscription = _context.Subscriptions
+                .Include(subscription => subscription.User)
+                .Include(subscription => subscription.Products)
+                .FirstOrDefault(subscription => subscription.User == user);
+
+            if (subscription == null)
+            {
+                subscription = new Subscription
+                {
+                    User = user,
+                    Purchased = DateTime.UtcNow
+                };
+
+                _context.Subscriptions.Add(subscription);
+            }
+
+            return subscription;
         }
     }
 }

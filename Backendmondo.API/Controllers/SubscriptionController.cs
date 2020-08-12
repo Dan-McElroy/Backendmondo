@@ -3,9 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Backendmondo.API.Context;
-using Backendmondo.API.Helpers;
 using Backendmondo.API.Models;
-using Backendmondo.API.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,7 +41,7 @@ namespace Backendmondo.API.Controllers
 
             var subscription = _context.Subscriptions
                 .Include(subscription => subscription.User)
-                .Include(subscription => subscription.Product)
+                .Include(subscription => subscription.Products)
                 .AsEnumerable()
                 .FirstOrDefault(
                     subscription => subscription.User.MatchesEmailAddress(email));

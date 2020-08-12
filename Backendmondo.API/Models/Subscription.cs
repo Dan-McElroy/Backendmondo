@@ -13,15 +13,22 @@ namespace Backendmondo.API.Models
 
         public User User { get; set; }
 
-        public Product Product { get; set; }
+        public ICollection<Product> Products { get; set; }
 
         public DateTime Purchased { get; set; }
 
         public ICollection<SubscriptionPause> Pauses { get; set; }
 
-        public bool IsPaused => Pauses.Any(pause => pause.IsOngoing);
+        private bool IsPaused => Pauses.Any(pause => pause.IsOngoing);
 
-        public DateTime? Expires
+        private int TotalDurationMonths => Products.Sum(product => product.DurationMonths);
+
+        private TimeSpan TotalPauseDuration =>
+            TimeSpan.FromMilliseconds(Pauses
+                .Where(pause => !pause.IsOngoing)
+                .Sum(pause => pause.Duration.TotalMilliseconds));
+
+        private DateTime? Expires
         {
             get
             {
@@ -29,19 +36,16 @@ namespace Backendmondo.API.Models
                 {
                     return null;
                 }
-                return Purchased.AddMonths(Product.DurationMonths) + TotalPauseDuration;
+                var combinedProductDurationMonths = Products.Sum(product => product.DurationMonths);
+                return Purchased.AddMonths(combinedProductDurationMonths) + TotalPauseDuration;
             }
         }
 
         public Subscription()
         {
             Pauses = new List<SubscriptionPause>();
+            Products = new List<Product>();
         }
-
-        private TimeSpan TotalPauseDuration =>
-            TimeSpan.FromMilliseconds(Pauses
-                .Where(pause => !pause.IsOngoing)
-                .Sum(pause => pause.Duration.TotalMilliseconds));
 
 
         public SubscriptionDTO ToDTO()
@@ -49,9 +53,10 @@ namespace Backendmondo.API.Models
             return new SubscriptionDTO
             {
                 Id = Id.ToString(),
-                Duration = Product.DurationMonths,
+                TotalDuration = TotalDurationMonths,
                 StartDate = Purchased.ToString("yyyy-MM-dd"),
-                EndDate = Expires?.ToString("yyyy-MM-dd")
+                EndDate = Expires?.ToString("yyyy-MM-dd"),
+                PurchasedProducts = Products.Select(product => product.ToDTO())
             };
         }
     }
