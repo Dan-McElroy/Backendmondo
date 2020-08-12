@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Backendmondo.API/Backendmondo.API.csproj", "Backendmondo.API/"]
 COPY ["Backendmondo.Tests/Backendmondo.Tests.csproj", "Backendmondo.Tests/"]
-RUN dotnet restore
+RUN dotnet restore "Backendmondo.API/Backendmondo.API.csproj"
 COPY . .
 WORKDIR "/src/Backendmondo.API"
 RUN dotnet build "Backendmondo.API.csproj" -c Release -o /app/build
