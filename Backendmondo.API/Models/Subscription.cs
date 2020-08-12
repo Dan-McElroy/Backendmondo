@@ -33,6 +33,10 @@ namespace Backendmondo.API.Models
 
         private int TotalDurationMonths => ProductsPurchased.Sum(purchase => purchase.Product.DurationMonths);
 
+        private float TotalPurchaseCostUSD => ProductsPurchased.Sum(purchase => purchase.PriceUSDWhenPurchased);
+
+        private float TotalTaxCostUSD => ProductsPurchased.Sum(purchase => purchase.TaxUSDWhenPurchased);
+
         private TimeSpan TotalPauseDuration =>
             TimeSpan.FromMilliseconds(Pauses
                 .Where(pause => !pause.IsOngoing)
@@ -71,7 +75,10 @@ namespace Backendmondo.API.Models
                 TotalDuration = TotalDurationMonths,
                 StartDate = Purchased?.ToString("yyyy-MM-dd"),
                 EndDate = Expires?.ToString("yyyy-MM-dd"),
-                PurchasedProducts = ProductsPurchased.Select(purchased => purchased.ToDTO()).OrderBy(purchase => purchase.DateOfPurchase)
+                PurchasedProducts = ProductsPurchased.Select(purchased => purchased.ToDTO()).OrderBy(purchase => purchase.DateOfPurchase),
+                TotalPurchaseCostUSD = TotalPurchaseCostUSD,
+                TotalTaxCostUSD = TotalTaxCostUSD,
+                IsPaused = IsPaused
             };
         }
     }

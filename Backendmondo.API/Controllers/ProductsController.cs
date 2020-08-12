@@ -95,7 +95,7 @@ namespace Backendmondo.API.Controllers
         [Route("secret/add")]
         public async Task<IActionResult> PostAddProduct([FromBody] ProductDTO product)
         {
-            _context.Products.Add(new Product { DurationMonths = product.Duration, Name = product.Name, PriceUSD = product.Price, TaxUSD = product.Tax });
+            _context.Products.Add(new Product { DurationMonths = product.DurationMonths, Name = product.Name, PriceUSD = product.PriceUSD, TaxUSD = product.TaxUSD });
             await _context.Save();
 
             return Ok("Product successfully added to store.");

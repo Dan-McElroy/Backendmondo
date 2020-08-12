@@ -6,10 +6,10 @@
 
         public string Name { get; set; }
 
-        public int Duration { get; set; }
+        public int DurationMonths { get; set; }
 
-        public float Price { get; set; }
+        public float PriceUSD { get; set; }
 
-        public float Tax { get; set; }
+        public float TaxUSD { get; set; }
     }
 }

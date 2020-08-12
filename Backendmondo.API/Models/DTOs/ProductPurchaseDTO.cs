@@ -4,8 +4,8 @@
     {
         public string DateOfPurchase { get;set; }
         
-        public float PriceWhenPurchased { get; set; }
+        public float PriceUSDWhenPurchased { get; set; }
         
-        public float TaxWhenPurchased { get; set; }
+        public float TaxUSDWhenPurchased { get; set; }
     }
 }

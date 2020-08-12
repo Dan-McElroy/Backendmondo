@@ -15,5 +15,11 @@ namespace Backendmondo.API.Models.DTOs
         public IEnumerable<ProductPurchaseDTO> PurchasedProducts { get; set; }
 
         public int TotalDuration { get; set; }
+
+        public float TotalPurchaseCostUSD { get; set; }
+
+        public float TotalTaxCostUSD { get; set; }
+
+        public bool IsPaused { get; set; }
     }
 }

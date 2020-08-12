@@ -23,9 +23,9 @@ namespace Backendmondo.API.Models
             {
                 ProductId = Id.ToString(),
                 Name = Name,
-                Duration = DurationMonths,
-                Price = PriceUSD,
-                Tax = TaxUSD
+                DurationMonths = DurationMonths,
+                PriceUSD = PriceUSD,
+                TaxUSD = TaxUSD
             };
         }
     }

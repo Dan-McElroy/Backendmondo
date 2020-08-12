@@ -27,13 +27,13 @@ namespace Backendmondo.API.Models
             return new ProductPurchaseDTO
             {
                 ProductId = Product.Id.ToString(),
-                Duration = Product.DurationMonths,
+                DurationMonths = Product.DurationMonths,
                 Name = Product.Name,
                 DateOfPurchase = Purchased.ToString("yyyy-MM-dd"),
-                PriceWhenPurchased = PriceUSDWhenPurchased,
-                TaxWhenPurchased = TaxUSDWhenPurchased,
-                Price = Product.PriceUSD,
-                Tax = Product.TaxUSD,
+                PriceUSDWhenPurchased = PriceUSDWhenPurchased,
+                TaxUSDWhenPurchased = TaxUSDWhenPurchased,
+                PriceUSD = Product.PriceUSD,
+                TaxUSD = Product.TaxUSD,
             };
         }
     }
