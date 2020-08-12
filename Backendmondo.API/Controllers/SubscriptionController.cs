@@ -124,7 +124,7 @@ namespace Backendmondo.API.Controllers
         [Route("{id}")]
         public IActionResult DeleteSubscription(string id)
         {
-            if (!Guid.TryParse(id, out var guid))
+            if (!Guid.TryParse(id, out var subscriptionId))
             {
                 ModelState.AddModelError(nameof(id), "Given ID has an invalid format.");
             }
@@ -133,6 +133,14 @@ namespace Backendmondo.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            var subscription = _context.Subscriptions.Find(subscriptionId);
+            if (subscription == null)
+            {
+                return NotFound("No subscription found with the given ID.");
+            }
+
+            _context.Subscriptions.Remove(subscription);
 
             return Ok("Subscription was successfully cancelled.");
         }
