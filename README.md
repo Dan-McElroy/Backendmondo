@@ -9,8 +9,6 @@ At time of writing, I believe that all acceptance criteria of the first user sto
 ## Table of Contents
 
 1. [How To Use](#how-to-use)
-    * [API Location](#api-location)
-    * [Documentation](#documentation)
 2. [Decisions & Assumptions](#decisions--assumptions)
     * [Implementation Language](#implementation-language)
     * [Hosting Solution](#hosting-solution)
@@ -19,15 +17,11 @@ At time of writing, I believe that all acceptance criteria of the first user sto
 
 ## How to Use
 
-### API Location
-
 The API is currently hosted at [https://backendmondo.herokuapp.com].
 
 Note: as the application is running on a free Heroku instance, it may take some time for the first requests to resolve as the application spins up.
 
-### Documentation
-
-Documentation for how to use the API can be located [here](https://app.swaggerhub.com/apis-docs/DanMcElroy/Backendmondo).
+Documentation can be located [here](https://app.swaggerhub.com/apis-docs/DanMcElroy/Backendmondo), where you can also test the various endpoints exposed by the API.
 
 This documentation should provide a description of all API endpoints, how to use them and what response data to expect.
 
@@ -57,4 +51,18 @@ simplified the hosting and deployment processes and allowed me to focus on tackl
     * Related to this, if information about the subscription is requested while the subscription is paused, the end date will be shown as null (as it is in the process of being extended).
 3. In the middle of their subscription, the user can choose to purchase a second product and extend their subscription that way. The duration of the subscription will be the combined durations of products purchased.
 
+## Architecture
+
+### API Controllers
+
+
+
+### Models
+
+#### Database Architecture
+
+![](docs/database.png)
+
 ## Known Issues
+
+1. A separate table of users has been created 
