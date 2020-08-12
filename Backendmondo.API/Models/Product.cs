@@ -21,6 +21,7 @@ namespace Backendmondo.API.Models
         {
             return new ProductDTO
             {
+                Id = Id.ToString(),
                 Name = Name,
                 Duration = DurationMonths,
                 Price = PriceUSD,

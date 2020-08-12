@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Backendmondo.API.Models
 {
-    public class Subscription
+    public class Subscription : ISoftDelete
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
@@ -33,6 +33,11 @@ namespace Backendmondo.API.Models
             }
         }
 
+        public Subscription()
+        {
+            Pauses = new List<SubscriptionPause>();
+        }
+
         private TimeSpan TotalPauseDuration =>
             TimeSpan.FromMilliseconds(Pauses
                 .Where(pause => !pause.IsOngoing)
@@ -45,8 +50,8 @@ namespace Backendmondo.API.Models
             {
                 Id = Id.ToString(),
                 Duration = Product.DurationMonths,
-                StartDate = Purchased,
-                EndDate = Expires
+                StartDate = Purchased.ToString("yyyy-MM-dd"),
+                EndDate = Expires?.ToString("yyyy-MM-dd")
             };
         }
     }

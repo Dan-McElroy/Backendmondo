@@ -52,9 +52,9 @@ namespace Backendmondo.API.Controllers
 
         [HttpPost]
         [Route("purchase")]
-        public IActionResult PostPurchase([FromBody] PurchaseRequestDTO request)
+        public async Task<IActionResult> PostPurchase([FromBody] PurchaseRequestDTO request)
         {
-            if (!(Guid.TryParse(request.ProductId, out var _)))
+            if (!(Guid.TryParse(request.ProductId, out var productId)))
             {
                 ModelState.AddModelError(nameof(request.ProductId), "Given product ID has an invalid format.");
             }
@@ -64,7 +64,7 @@ namespace Backendmondo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var product = _context.Products.Find(request.ProductId);
+            var product = _context.Products.Find(productId);
 
             if (product == null)
             {
@@ -77,6 +77,7 @@ namespace Backendmondo.API.Controllers
             {
                 user = new User { Email = request.UserEmail.Trim().ToLower() };
                 _context.Users.Add(user);
+                await _context.Save();
             }
 
             var subscription = new Subscription
@@ -88,7 +89,7 @@ namespace Backendmondo.API.Controllers
 
             _context.Subscriptions.Add(subscription);
 
-            _context.Save();
+            await _context.Save();
 
             return NoContent();
         }

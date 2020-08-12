@@ -6,9 +6,9 @@ namespace Backendmondo.API.Models.DTOs
     {
         public string Id { get; set; }
 
-        public DateTime StartDate { get; set; }
+        public string StartDate { get; set; }
 
-        public DateTime? EndDate { get; set; }
+        public string EndDate { get; set; }
 
         public float Price { get; set; }
 
