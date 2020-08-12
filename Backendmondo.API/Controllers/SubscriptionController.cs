@@ -126,7 +126,7 @@ namespace Backendmondo.API.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult DeleteSubscription(string id)
+        public async Task<IActionResult> DeleteSubscription(string id)
         {
             if (!Guid.TryParse(id, out var subscriptionId))
             {
@@ -145,6 +145,8 @@ namespace Backendmondo.API.Controllers
             }
 
             _context.Subscriptions.Remove(subscription);
+
+            await _context.Save();
 
             return Ok("Subscription was successfully cancelled.");
         }
