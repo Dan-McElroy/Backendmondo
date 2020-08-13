@@ -63,5 +63,7 @@ The database architecture was left very simple, built on the idea that a subscri
 
 Below are a number of issues which in a more fully fleshed-out product would be addressed, but were left unresolved in the interest of time and complexity.
 
-1. There is currently no authentication for any of the API methods, which is especially critical for those dealing with purchase products and cancelling subscriptions. 
-2. The `PriceUSDWhenPurchased` and `TaxUSDWhenPurchased` fields in `ProductPurchases` should be made readonly, as they should never be altered after an entity is created.
+1. There is currently no authentication for any of the API methods, which is especially critical for those dealing with purchase products and cancelling subscriptions.
+2. The `PriceUSDWhenPurchased` and `TaxUSDWhenPurchased` fields in `ProductPurchases` are readonly in code, but are not protected from modification in the database.
+3. Unit tests were written fairly late in the development process - I would usually prefer a test-driven approach, but did not fully lock down the design of the API before
+beginning implementation and so was not prepared to write tests until the functionality was already in place.
