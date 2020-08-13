@@ -17,7 +17,7 @@ At time of writing, I believe that all acceptance criteria of the first user sto
 
 ## How to Use
 
-The API is currently hosted at [https://backendmondo.herokuapp.com].
+The API is currently hosted at https://backendmondo.herokuapp.com.
 
 Note: as the application is running on a free Heroku instance, it may take some time for the first requests to resolve as the application spins up.
 
