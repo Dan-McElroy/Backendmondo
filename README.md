@@ -67,3 +67,5 @@ Below are a number of issues which in a more fully fleshed-out product would be 
 2. The `PriceUSDWhenPurchased` and `TaxUSDWhenPurchased` fields in `ProductPurchases` are readonly in code, but are not protected from modification in the database.
 3. Unit tests were written fairly late in the development process - I would usually prefer a test-driven approach, but did not fully lock down the design of the API before
 beginning implementation and so was not prepared to write tests until the functionality was already in place.
+4. The API contains two "secret" methods for adding and deleting products, deliberately left out of the API documentation. With more time, I would have secured these endpoints
+through use of a secret key and exposed them in the documentation.
