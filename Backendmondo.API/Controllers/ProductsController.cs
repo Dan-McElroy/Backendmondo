@@ -94,6 +94,34 @@ namespace Backendmondo.API.Controllers
             return Ok("Product successfully added to store.");
         }
 
+        [HttpDelete]
+        [Route("secret/{id}")]
+        public async Task<IActionResult> DeleteProduct(string id)
+        {
+            if (!(Guid.TryParse(id, out var productId)))
+            {
+                ModelState.AddModelError(nameof(id), "Given product ID has an invalid format.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var product = await _context.Products.FindAsync(productId);
+
+            if (product == null)
+            {
+                return NotFound("Could not find a product with the given ID.");
+            }
+
+            _context.Products.Remove(product);
+
+            await _context.Save();
+
+            return Ok("Product successfully removed from the store.");
+        }
+
         private User FindOrCreateUser(string email)
         {
             var user = _context.Users.AsEnumerable().FirstOrDefault(user => user.MatchesEmailAddress(email));
